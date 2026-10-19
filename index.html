@@ -231,12 +231,12 @@
 <body>
 
 <div class="container">
-  <h1 class="no-print">APLIKASI PKG DAN PENGHITUNGAN ANGKA KREDIT</h1>
+  <h1 class="no-print">APLIKASI PENILAIAN KINERJA GURU MADRASAH</h1>
 
   <form id="pkgForm">
     <!-- PANEL INPUT CONFIG -->
     <div class="form-section no-print">
-      <h3>PENGISIAN DATA UTAMA GURU, MADRASAH & ANGKA KREDIT</h3>
+      <h3>PENGISIAN DATA UTAMA GURU DAN MADRASAH</h3>
       <div class="grid-3">
         <div>
           <div class="form-group">
@@ -315,21 +315,6 @@
           <input type="text" id="in_nipKamad" value="197003031998031003">
         </div>
       </div>
-
-      <h4 style="margin-top: 15px; margin-bottom: 10px;">Parameter Perhitungan Angka Kredit (Lampiran 1D)</h4>
-      <div class="grid-4">
-        <div class="form-group">
-          <label>AKK (AK Kumulatif Target):</label>
-          <input type="number" id="in_akk" value="100" step="0.01" oninput="recalc()">
-        </div>
-        <div class="form-group">
-          <label>AKST (AK Sub Unsur Penunjang):</label>
-          <input type="number" id="in_akst" value="10" step="0.01" oninput="recalc()">
-        </div>
-        <div class="form-group">
-          <label>AKPKB (AK Pengembangan Diri/Karya):</label>
-          <input type="number" id="in_akpkb" value="10" step="0.01" oninput="recalc()">
-        </div>
         <div class="form-group">
           <label>Tugas Tambahan (% Beban Jam):</label>
           <select id="in_persenTugas" onchange="recalc()">
