@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi PKG dan Penghitungan Angka Kredit Lengkap</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Times New Roman", Times, serif, Arial;
+    }
+    body {
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+      color: #000;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .form-section {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 6px;
+      background-color: #fafafa;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+    .form-group input, .form-group select {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    
+    /* Layout per Halaman Cetak */
+    .page-section {
+      background: #fff;
+      margin-bottom: 30px;
+      padding: 10px;
+    }
+
+    /* Format Tabel */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    table, th, td {
+      border: 1px solid #000;
+    }
+    th, td {
+      padding: 5px 8px;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    th {
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .bold {
+      font-weight: bold;
+    }
+    
+    /* Blok Merah Khusus Hasil Perhitungan */
+    .red-block {
+      background-color: #ffcccc !important;
+      border: 2px solid #ff0000 !important;
+      color: #b30000;
+      font-weight: bold;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    /* Tombol Cetak */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .btn-submit:hover {
+      background-color: #0b5ed7;
+    }
+
+    /* Area Tanda Tangan */
+    .signature-container {
+      margin-top: 20px;
+      width: 100%;
+    }
+    .sig-date {
+      text-align: right;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .sig-table {
+      width: 100%;
+      border: none !important;
+    }
+    .sig-table td {
+      border: none !important;
+      text-align: center;
+      vertical-align: top;
+      width: 33.33%;
+      font-size: 13px;
+      padding: 0;
+    }
+    .sig-space {
+      height: 60px;
+    }
+
+    /* Lampiran Header Style */
+    .lampiran-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .source-box {
+      font-size: 11px;
+      margin-bottom: 15px;
+    }
+
+    /* CSS Khusus Cetak */
+    @media print {
+      body {
+        background-color: #fff;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+        width: 100%;
+      }
+      .no-print, h1 {
+        display: none !important;
+      }
+      .form-section {
+        border: none;
+        padding: 0;
+        background: transparent;
+        margin-bottom: 15px;
+      }
+      input[type="text"], input[type="number"], select {
+        border: none;
+        border-bottom: 1px dotted #000;
+        padding: 0;
+        background: transparent;
+      }
+      
+      .page-section {
+        page-break-after: always;
+        break-after: page;
+        padding: 0;
+        margin: 0;
+      }
+      .page-section:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      .signature-container {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .red-block {
+        background-color: #ffcccc !important;
+        border: 2px solid #ff0000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 1.2cm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="no-print">APLIKASI PKG DAN PENGHITUNGAN ANGKA KREDIT</h1>
+
+  <form id="pkgForm">
+    <!-- PANEL INPUT CONFIG -->
+    <div class="form-section no-print">
+      <h3>PENGISIAN DATA UTAMA GURU, MADRASAH & ANGKA KREDIT</h3>
+      <div class="grid-3">
+        <div>
+          <div class="form-group">
+            <label>Nama Guru:</label>
+            <input type="text" id="in_nama" value="Nama Guru, S.Pd.">
+          </div>
+          <div class="form-group">
+            <label>NIP / Karpeg:</label>
+            <input type="text" id="in_nip" value="198501012010011001">
+          </div>
+          <div class="form-group">
+            <label>Tempat, Tanggal Lahir:</label>
+            <input type="text" id="in_ttl" value="Cirebon, 01 Januari 1985">
+          </div>
+          <div class="form-group">
+            <label>Pangkat / Gol. Ruang:</label>
+            <input type="text" id="in_pangkat" value="Penata / III.c">
+          </div>
+          <div class="form-group">
+            <label>TMT Guru:</label>
+            <input type="text" id="in_tmt" value="01 Januari 2020">
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label>Jabatan:</label>
+            <input type="text" id="in_jabatan" value="Guru Ahli Pertama">
+          </div>
+          <div class="form-group">
+            <label>NUPTK / NRG:</label>
+            <input type="text" id="in_nuptk" value="1234567890123456">
+          </div>
+          <div class="form-group">
+            <label>Jenis Kelamin:</label>
+            <input type="text" id="in_jk" value="Laki-laki">
+          </div>
+          <div class="form-group">
+            <label>Pendidikan Terakhir:</label>
+            <input type="text" id="in_pendidikan" value="S-1 Pendidikan">
+          </div>
+          <div class="form-group">
+            <label>Masa Kerja Guru:</label>
+            <input type="text" id="in_masakerja" value="6 Tahun 0 Bulan">
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label>Nama Madrasah / Sekolah:</label>
+            <input type="text" id="in_madrasah" value="MAN 1 Cirebon">
+          </div>
+          <div class="form-group">
+            <label>Kecamatan / Kota:</label>
+            <input type="text" id="in_kecamatan" value="Cirebon / Cirebon">
+          </div>
+          <div class="form-group">
+            <label>Nama Penilai:</label>
+            <input type="text" id="in_penilai" value="Nama Penilai, M.Pd.">
+          </div>
+          <div class="form-group">
+            <label>NIP Penilai:</label>
+            <input type="text" id="in_nipPenilai" value="197802022005021002">
+          </div>
+          <div class="form-group">
+            <label>Titimangsa (Tempat, Tanggal Cetak):</label>
+            <input type="text" id="in_titimangsa" value="Cirebon, 31 Desember 2026">
+          </div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top: 10px;">
+        <div class="form-group">
+          <label>Nama Kepala Madrasah:</label>
+          <input type="text" id="in_kamad" value="Nama Kepala Madrasah, M.Ag.">
+        </div>
+        <div class="form-group">
+          <label>NIP Kepala Madrasah:</label>
+          <input type="text" id="in_nipKamad" value="197003031998031003">
+        </div>
+      </div>
+
+      <h4 style="margin-top: 15px; margin-bottom: 10px;">Parameter Perhitungan Angka Kredit (Lampiran 1D)</h4>
+      <div class="grid-4">
+        <div class="form-group">
+          <label>AKK (AK Kumulatif Target):</label>
+          <input type="number" id="in_akk" value="100" step="0.01" oninput="recalc()">
+        </div>
+        <div class="form-group">
+          <label>AKST (AK Sub Unsur Penunjang):</label>
+          <input type="number" id="in_akst" value="10" step="0.01" oninput="recalc()">
+        </div>
+        <div class="form-group">
+          <label>AKPKB (AK Pengembangan Diri/Karya):</label>
+          <input type="number" id="in_akpkb" value="10" step="0.01" oninput="recalc()">
+        </div>
+        <div class="form-group">
+          <label>Tugas Tambahan (% Beban Jam):</label>
+          <select id="in_persenTugas" onchange="recalc()">
+            <option value="100">100% (Pembelajaran Penuh)</option>
+            <option value="50">50% (Kepala Sekolah/Madrasah)</option>
+            <option value="25">25% (Wakil Kamad/Kepala Lab/Perpus)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="appContainer"></div>
+
+    <button type="button" class="btn-submit no-print" onclick="window.print()">Cetak Dokumen PKG & Angka Kredit Lengkap</button>
+  </form>
+</div>
+
+<script>
+// Data Indikator Kompetensi PKG (1 sampai 14)
+const dataKompetensi = [
+  { id: 1, title: "Menguasai Karakteristik Peserta Didik", indicators: ["Guru dapat mengidentifikasi karakteristik belajar setiap peserta didik di kelasnya", "Guru memastikan bahwa semua peserta didik mendapatkan kesempatan yang sama untuk berpartisipasi aktif dalam kegiatan pembelajaran", "Guru dapat mengatur kelas untuk memberikan kesempatan belajar yang sama pada semua peserta didik dengan kelainan fisik dan kemampuan belajar yang berbeda", "Guru mencoba mengetahui penyebab penyimpangan perilaku peserta didik untuk mencegah agar perilaku tersebut tidak merugikan peserta didik lainnya", "Guru membantu mengembangkan potensi dan mengatasi kekurangan peserta didik", "Guru memperhatikan peserta didik dengan kelemahan fisik tertentu agar dapat mengikuti aktivitas pembelajaran, sehingga peserta didik tersebut tidak termarginalkan (tersisihkan, diolok- olok, minder, dsb.)"], defaultScores: [2, 2, 2, 2, 2, 2] },
+  { id: 2, title: "Menguasai teori belajar dan prinsip-prinsip pembelajaran yang mendidik", indicators: ["Guru memberi kesempatan kepada peserta didik untuk menguasai materi pembelajaran sesuai usia dan kemampuannya belajarnya melalui pengaturan proses pembelajaran dan aktivitas yang bervariasi", "Guru selalu memastikan tingkat pemahaman peserta didik terhadap materi pembelajaran tertentu dan menyesuaikan aktivitas pembelajaran berikutnya berdasarkan tingkat pemahaman tersebut", "Guru dapat menjelaskan alasan pelaksanaan kegiatan / aktivitas yang dilakukannya, baik yang sesuai maupun yang berbeda dengan rencana, terkait keberhasilan pembelajaran", "Guru menggunakan berbagai teknik untuk memotiviasi kemauan belajar peserta didik", "Guru merencanakan kegiatan pembelajaran yang saling terkait satu sama lain, dengan memperhatikan tujuan pembelajaran maupun proses belajar peserta didik", "Guru memperhatikan respon peserta didik yang belum / kurang memahami materi pembelajaran yang diajarkan dan menggunakannya untuk memperbaiki rancangan pembelajaran berikutnya"], defaultScores: [1, 1, 1, 1, 1, 1] },
+  { id: 3, title: "Pengembangan Kurikulum", indicators: ["Guru dapat menyusun silabus yang sesuai dengan kurikulum", "Guru merancang rencana pembelajaran yang sesuai dengan silabus untuk membahas materi ajar tertentu agar peserta didik dapat mencapai kompetensi dasar yang ditetapkan", "Guru mengikuti urutan materi pembelajaran dengan memperhatikan tujuan pembelajaran", "Guru memilih materi pembelajaran yang sesuai, tepat, mutakhir, dan sesuai konteks kehidupan sehari-hari"], defaultScores: [2, 2, 2, 2] },
+  { id: 4, title: "Kegiatan pembelajaran yang mendidik", indicators: ["Guru melaksanakan aktivitas pembelajaran sesuai rancangan secara lengkap", "Guru melaksanakan aktivitas pembelajaran untuk membantu proses belajar, bukan menguji", "Guru mengkomunikasikan informasi baru sesuai usia dan kemampuan", "Guru menyikapi kesalahan peserta didik sebagai tahapan proses pembelajaran", "Guru melaksanakan kegiatan pembelajaran sesuai isi kurikulum", "Guru melakukan aktivitas pembelajaran bervariasi dengan waktu cukup", "Guru mengelola kelas efektif tanpa mendominasi", "Guru mampu menyesuaikan aktivitas pembelajaran dengan kondisi kelas", "Guru memberikan kesempatan bertanya dan berinteraksi", "Guru mengatur pelaksanaan aktivitas secara sistematis", "Guru menggunakan alat bantu / TIK"], defaultScores: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+  { id: 5, title: "Pengembangan potensi peserta didik", indicators: ["Guru menganalisis hasil belajar setiap peserta didik", "Guru merancang aktivitas sesuai kecakapan dan pola belajar", "Guru memunculkan daya kreativitas dan berpikir kritis", "Guru aktif membantu individu peserta didik", "Guru mengidentifikasi bakat, minat, dan kesulitan belajar", "Guru memberikan kesempatan belajar sesuai cara belajar", "Guru memusatkan perhatian pada interaksi positif"], defaultScores: [1, 1, 1, 1, 1, 1, 1] },
+  { id: 6, title: "Komunikasi dengan peserta didik", indicators: ["Guru menggunakan pertanyaan terbuka untuk menjaga partisipasi", "Guru mendengarkan semua pertanyaan/tanggapan tanpa menginterupsi", "Guru menanggapi pertanyaan secara tepat dan benar", "Guru menumbuhkan kerja sama antar peserta didik", "Guru memperhatikan semua jawaban untuk ukur pemahaman", "Guru merespon pertanyaan secara lengkap dan relevan"], defaultScores: [1, 1, 1, 1, 1, 1] },
+  { id: 7, title: "Penilaian dan evaluasi", indicators: ["Guru menyusun alat penilaian sesuai tujuan di RPP", "Guru melaksanakan penilaian dengan berbagai teknik", "Guru menganalisis hasil penilaian untuk remedial/pengayaan", "Guru memanfaatkan masukan peserta didik untuk refleksi", "Guru memanfaatkan hasil penilaian untuk rancangan berikutnya"], defaultScores: [1, 1, 1, 1, 1] },
+  { id: 8, title: "Bertindak sesuai dengan norma agama, hukum, sosial, dan kebudayaan nasional", indicators: ["Guru menghargai dan mempromosikan prinsip-prinsip Pancasila", "Guru mengembangkan kerjasama tanpa diskriminasi", "Guru saling menghormati antar teman sejawat", "Guru memiliki rasa persatuan dan kesatuan bangsa", "Guru mempunyai pandangan luas tentang keberagaman"], defaultScores: [1, 1, 1, 1, 1] },
+  { id: 9, title: "Menunjukkan pribadi yang dewasa dan teladan", indicators: ["Guru bertingkah laku sopan terhadap semua pihak", "Guru membagikan pengalaman kepada teman sejawat", "Guru mengelola pembelajaran secara berwibawa", "Guru bersikap dewasa menerima masukan", "Guru berperilaku baik mencitrakan nama baik sekolah"], defaultScores: [1, 1, 1, 1, 1] },
+  { id: 10, title: "Etos kerja, tanggung jawab yang tinggi, rasa bangga menjadi guru", indicators: ["Guru mengawali dan mengakhiri pembelajaran tepat waktu", "Guru mengaktifkan siswa jika berhalangan hadir", "Guru memenuhi jam mengajar dengan baik", "Guru memberitahu lebih awal jika berhalangan", "Guru menyelesaikan tugas administratif tepat waktu", "Guru memanfaatkan waktu luang secara produktif", "Guru memberikan kontribusi pengembangan sekolah", "Guru merasa bangga dengan profesinya"], defaultScores: [1, 1, 1, 1, 1, 1, 1, 1] },
+  { id: 11, title: "Bersikap inklusif, bertindak obyektif, serta tidak diskriminatif", indicators: ["Guru memperlakukan peserta didik secara adil", "Guru menjaga hubungan baik dengan teman sejawat", "Guru sering berinteraksi tanpa membatasi kelompok tertentu"], defaultScores: [1, 1, 1] },
+  { id: 12, title: "Komunikasi dengan sesama guru, tenaga kependidikan, orang tua, peserta didik dan masyarakat", indicators: ["Guru menyampaikan informasi kemajuan kepada orang tua", "Guru aktif dalam kegiatan sekolah dan masyarakat", "Guru memperhatikan sekolah sebagai bagian dari masyarakat"], defaultScores: [1, 1, 1] },
+  { id: 13, title: "Penguasaan materi, struktur, konsep dan pola pikir keilmuan yang mendukung mata pelajaran yang diampu", indicators: ["Guru melakukan pemetaan standar kompetensi dan KD", "Guru menyertakan informasi tepat dan mutakhir", "Guru menyusun materi yang membantu pemahaman konsep"], defaultScores: [1, 1, 1] },
+  { id: 14, title: "Mengembangkan Keprofesionalan melalui tindakan yang reflektif", indicators: ["Guru melakukan evaluasi diri secara spesifik", "Guru memiliki jurnal pembelajaran dan catatan masukan", "Guru memanfaatkan bukti kinerja untuk PKB", "Guru mengaplikasikan pengalaman PKB", "Guru melakukan penelitian / karya inovasi", "Guru memanfaatkan TIK dalam PKB"], defaultScores: [1, 1, 1, 1, 1, 1] }
+];
+
+function renderAll() {
+  const container = document.getElementById('appContainer');
+  let html = '';
+
+  // ================= 1. LAMPIRAN 1A =================
+  html += `
+    <div class="page-section">
+      <div class="lampiran-title">Lampiran 1A</div>
+      <div class="source-box">
+        Sumber:<br>
+        ▷ Permendiknas No. 16 Tahun 2007 tentang Standar Kualifikasi Akademik dan Kompetensi Guru<br>
+        ▷ BSNP versi 6.0 11/2008 kerangka indikator pencapaian Standar Nasional Pendidikan<br>
+        ▷ Permenegpan dan RB 16/2009 tentang Jabatan Fungsional Guru dan Angka Kreditnya
+      </div>
+      <h3 style="font-size: 13px; text-align: center; margin-bottom: 10px;">LEMBAR PERNYATAAN KOMPETENSI, INDIKATOR, DAN CARA MENILAI PK GURU KELAS / MATA PELAJARAN</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 8%;">No.</th>
+            <th style="width: 52%;">Kompetensi</th>
+            <th style="width: 40%;">Cara Menilai</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="3" class="bold" style="background:#f9f9f9;">A. Pedagogik</td></tr>
+          <tr><td>1.</td><td>Menguasai Karakteristik peserta didik</td><td>Pengamatan & Pemantauan</td></tr>
+          <tr><td>2.</td><td>Menguasai teori belajar dan prinsip-prinsip pembelajaran yang mendidik</td><td>Pengamatan</td></tr>
+          <tr><td>3.</td><td>Pengembangan Kurikulum</td><td>Pengamatan</td></tr>
+          <tr><td>4.</td><td>Kegiatan pembelajaran yang mendidik</td><td>Pengamatan</td></tr>
+          <tr><td>5.</td><td>Pengembangan potensi peserta didik</td><td>Pengamatan & Pemantauan</td></tr>
+          <tr><td>6.</td><td>Komunikasi dengan peserta didik</td><td>Pengamatan</td></tr>
+          <tr><td>7.</td><td>Penilaian dan evaluasi</td><td>Pengamatan & Pemantauan</td></tr>
+          
+          <tr><td colspan="3" class="bold" style="background:#f9f9f9;">B. Kepribadian</td></tr>
+          <tr><td>8.</td><td>Bertindak sesuai dengan norma agama, hukum, sosial, dan kebudayaan nasional</td><td>Pengamatan & Pemantauan</td></tr>
+          <tr><td>9.</td><td>Menunjukan pribadi yang dewasa dan teladan</td><td>Pengamatan & Pemantauan</td></tr>
+          <tr><td>10.</td><td>Etos kerja, tanggung jawab yang tinggi, rasa bangga menjadi guru</td><td>Pengamatan & Pemantauan</td></tr>
+
+          <tr><td colspan="3" class="bold" style="background:#f9f9f9;">C. Sosial</td></tr>
+          <tr><td>11.</td><td>Bersikap inklusif, bertindak obyektif, serta tidak diskriminatif</td><td>Pengamatan & Pemantauan</td></tr>
+          <tr><td>12.</td><td>Komunikasi dengan sesama guru, tenaga kependidikan, orang tua, peserta didik dan masyarakat</td><td>Pengamatan</td></tr>
+
+          <tr><td colspan="3" class="bold" style="background:#f9f9f9;">D. Profesional</td></tr>
+          <tr><td>13.</td><td>Penguasaan materi, struktur, konsep dan pola pikir keilmuan yang mendukung mata pelajaran yang diampu</td><td>Pengamatan</td></tr>
+          <tr><td>14.</td><td>Mengembangkan Keprofesionalan melalui tindakan yang reflektif</td><td>Pengamatan</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size: 11px; margin-top: 5px;">
+        <strong>Keterangan:</strong><br>
+        - <em>Pengamatan</em> adalah kegiatan yang menilai kinerja guru melalui diskusi sebelum pengamatan, pengamatan proses pembelajaran, dan diskusi setelah pengamatan.<br>
+        - <em>Pemantauan</em> adalah kegiatan menilai kinerja melalui pemeriksaan dokumen, wawancara guru dan/atau warga sekolah.
+      </div>
+      ${getTandaTanganHTML()}
+    </div>
+  `;
+
+  // ================= 2. LAMPIRAN 1B =================
+  html += `
+    <div class="page-section">
+      <div class="lampiran-title">Lampiran 1B</div>
+      <h3 style="font-size: 13px; text-align: center;">LAPORAN DAN EVALUASI<br>PENILAIAN KINERJA GURU KELAS / MATA PELAJARAN</h3>
+      <table style="margin-top: 15px;">
+        <tr><td style="width: 35%;">Nama Guru</td><td style="width: 5%;">:</td><td style="width: 60%;"><span class="out_nama">-</span></td></tr>
+        <tr><td>NIP/Nomor Seri Karpeg</td><td>:</td><td><span class="out_nip">-</span></td></tr>
+        <tr><td>Pangkat/Golongan Ruang</td><td>:</td><td><span class="out_pangkat">-</span></td></tr>
+        <tr><td>Terhitung Mulai Tanggal (TMT)</td><td>:</td><td><span class="out_tmt">-</span></td></tr>
+        <tr><td>NUPTK/NRG</td><td>:</td><td><span class="out_nuptk">-</span></td></tr>
+        <tr><td>Nama Madrasah/Sekolah</td><td>:</td><td><span class="out_madrasah">-</span></td></tr>
+        <tr><td>Alamat Madrasah/Sekolah</td><td>:</td><td><span class="out_kecamatan">-</span></td></tr>
+        <tr><td>Tanggal mulai bekerja di madrasah ini</td><td>:</td><td><span class="out_tmt">-</span></td></tr>
+        <tr><td>Tanggal proses PKG</td><td>:</td><td><span class="out_titimangsa">-</span></td></tr>
+        <tr><td>Periode Penilaian</td><td>:</td><td>Januari s/d Desember 2026</td></tr>
+      </table>
+      
+      <div style="border: 1px solid #000; padding: 10px; margin-top: 20px; font-size: 12px;">
+        <div class="bold text-center">PERSETUJUAN</div>
+        <p style="text-align: justify; margin: 5px 0;">(Persetujuan ini harus ditandatangani oleh penilai dan guru yang dinilai)</p>
+        <p style="text-align: justify; margin: 5px 0;">Penilai dan guru yang dinilai menyatakan telah membaca dan memahami semua aspek yang ditulis / dilaporkan dalam format ini dan menyatakan setuju.</p>
+      </div>
+      ${getTandaTanganHTML()}
+    </div>
+  `;
+
+  // ================= 3. KOMPETENSI 1 s.d 14 =================
+  dataKompetensi.forEach((komp) => {
+    const maxSkor = komp.indicators.length * 2;
+    html += `
+      <div class="page-section">
+        <table>
+          <thead>
+            <tr>
+              <th colspan="5" style="font-size: 13px; padding: 6px;">PENILAIAN KOMPETENSI ${komp.id}<br><span style="font-weight: normal;">${komp.title}</span></th>
+            </tr>
+            <tr>
+              <th rowspan="2" style="width: 5%;">No.</th>
+              <th rowspan="2" style="width: 55%;">Indikator</th>
+              <th colspan="3" style="width: 40%;">Skor</th>
+            </tr>
+            <tr>
+              <th style="width: 13%;">Tidak Ada Bukti (0)</th>
+              <th style="width: 13%;">Terpenuhi Sebagian (1)</th>
+              <th style="width: 14%;">Seluruhnya Terpenuhi (2)</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    komp.indicators.forEach((ind, idx) => {
+      const defVal = (komp.defaultScores && komp.defaultScores[idx] !== undefined) ? komp.defaultScores[idx] : 0;
+      html += `
+        <tr>
+          <td class="text-center">${idx + 1}.</td>
+          <td>${ind}</td>
+          <td class="text-center"><input type="radio" name="k${komp.id}_ind${idx}" value="0" ${defVal === 0 ? 'checked' : ''} onchange="recalc()"></td>
+          <td class="text-center"><input type="radio" name="k${komp.id}_ind${idx}" value="1" ${defVal === 1 ? 'checked' : ''} onchange="recalc()"></td>
+          <td class="text-center"><input type="radio" name="k${komp.id}_ind${idx}" value="2" ${defVal === 2 ? 'checked' : ''} onchange="recalc()"></td>
+        </tr>
+      `;
+    });
+
+    html += `
+            <tr>
+              <td colspan="2" class="bold">Total skor untuk kompetensi ${komp.id}</td>
+              <td colspan="3" class="bold text-center" id="totSkor_${komp.id}">0</td>
+            </tr>
+            <tr>
+              <td colspan="2">Skor maksimum kompetensi ${komp.id} = jumlah indikator × 2</td>
+              <td colspan="3" class="text-center">${maxSkor}</td>
+            </tr>
+            <tr>
+              <td colspan="2">Persentase = (total skor / ${maxSkor}) × 100%</td>
+              <td colspan="3" class="text-center" id="persen_${komp.id}">0%</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="bold">Nilai untuk kompetensi ${komp.id}</td>
+              <td colspan="3" class="bold text-center" id="nilai_${komp.id}">1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  });
+
+  // ================= 4. LAMPIRAN 1C (REKAPITULASI) =================
+  html += `
+    <div class="page-section">
+      <div class="lampiran-title">Lampiran 1C</div>
+      <h3 style="font-size: 13px; text-align: center; margin-bottom: 5px;">REKAP HASIL PENILAIAN KINERJA GURU KELAS/MATA PELAJARAN</h3>
+      
+      <table style="margin-bottom: 10px;">
+        <tr>
+          <td style="width: 45%; vertical-align: top; border:none;">
+            <table>
+              <tr><td style="width:30%;">a. Nama</td><td>:</td><td><span class="out_nama">-</span></td></tr>
+              <tr><td>NIP</td><td>:</td><td><span class="out_nip">-</span></td></tr>
+              <tr><td>Tempat, Tgl Lahir</td><td>:</td><td><span class="out_ttl">-</span></td></tr>
+              <tr><td>Pangkat/Gol</td><td>:</td><td><span class="out_pangkat">-</span></td></tr>
+              <tr><td>Jabatan</td><td>:</td><td><span class="out_jabatan">-</span></td></tr>
+              <tr><td>NUPTK/NRG</td><td>:</td><td><span class="out_nuptk">-</span></td></tr>
+            </table>
+          </td>
+          <td style="width: 55%; vertical-align: top; border:none;">
+            <table>
+              <tr><td style="width:35%;">b. TMT Guru</td><td>:</td><td><span class="out_tmt">-</span></td></tr>
+              <tr><td>Masa Kerja</td><td>:</td><td><span class="out_masakerja">-</span></td></tr>
+              <tr><td>Jenis Kelamin</td><td>:</td><td><span class="out_jk">-</span></td></tr>
+              <tr><td>Pendidikan</td><td>:</td><td><span class="out_pendidikan">-</span></td></tr>
+              <tr><td>Unit Kerja</td><td>:</td><td><span class="out_madrasah">-</span></td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <div style="font-size: 12px; margin-bottom: 5px; display:flex; justify-content: space-between;">
+        <div>Periode Penilaian: <strong>Januari s/d Desember 2026</strong></div>
+        <div>Formatif [ ] &nbsp;&nbsp;&nbsp; Sumatif [<strong>V</strong>] &nbsp;&nbsp;&nbsp; Tahun: <strong>2026</strong></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 85%;">Kemajuan Kompetensi</th>
+            <th style="width: 15%;">Nilai*)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="2" class="bold" style="background:#f9f9f9;">A. Pedagogik</td></tr>
+          <tr><td>1. Menguasai Karakteristik peserta didik</td><td class="text-center bold" id="rekap_1">1</td></tr>
+          <tr><td>2. Menguasai teori belajar dan prinsip-prinsip pembelajaran yang mendidik</td><td class="text-center bold" id="rekap_2">1</td></tr>
+          <tr><td>3. Pengembangan Kurikulum</td><td class="text-center bold" id="rekap_3">1</td></tr>
+          <tr><td>4. Kegiatan pembelajaran yang mendidik</td><td class="text-center bold" id="rekap_4">1</td></tr>
+          <tr><td>5. Pengembangan potensi peserta didik</td><td class="text-center bold" id="rekap_5">1</td></tr>
+          <tr><td>6. Komunikasi dengan peserta didik</td><td class="text-center bold" id="rekap_6">1</td></tr>
+          <tr><td>7. Penilaian dan evaluasi</td><td class="text-center bold" id="rekap_7">1</td></tr>
+
+          <tr><td colspan="2" class="bold" style="background:#f9f9f9;">B. Kepribadian</td></tr>
+          <tr><td>8. Bertindak sesuai dengan norma agama, hukum, sosial, dan kebudayaan nasional</td><td class="text-center bold" id="rekap_8">1</td></tr>
+          <tr><td>9. Menunjukan pribadi yang dewasa dan teladan</td><td class="text-center bold" id="rekap_9">1</td></tr>
+          <tr><td>10. Etos kerja, tanggung jawab yang tinggi, rasa bangga menjadi guru</td><td class="text-center bold" id="rekap_10">1</td></tr>
+
+          <tr><td colspan="2" class="bold" style="background:#f9f9f9;">C. Sosial</td></tr>
+          <tr><td>11. Bersikap inklusif, bertindak obyektif, serta tidak diskriminatif</td><td class="text-center bold" id="rekap_11">1</td></tr>
+          <tr><td>12. Komunikasi dengan sesama guru, tenaga kependidikan, orang tua, peserta didik dan masyarakat</td><td class="text-center bold" id="rekap_12">1</td></tr>
+
+          <tr><td colspan="2" class="bold" style="background:#f9f9f9;">D. Profesional</td></tr>
+          <tr><td>13. Penguasaan materi, struktur, konsep dan pola pikir keilmuan yang mendukung mata pelajaran yang diampu</td><td class="text-center bold" id="rekap_13">1</td></tr>
+          <tr><td>14. Mengembangkan Keprofesionalan melalui tindakan yang reflektif</td><td class="text-center bold" id="rekap_14">1</td></tr>
+
+          <tr style="background:#f2f2f2;">
+            <td class="bold">Jumlah (Hasil Penilaian Kinerja Guru)</td>
+            <td class="bold text-center" id="total_jumlah_nilai">14</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size: 11px;">*) Nilai diisi berdasarkan laporan dan evaluasi PK guru, Nilai minimum per kompetensi = 1 dan maksimum = 4</div>
+      ${getTandaTanganHTML()}
+    </div>
+  `;
+
+  // ================= 5. LAMPIRAN 1D (PENGHITUNGAN ANGKA KREDIT) =================
+  html += `
+    <div class="page-section">
+      <div class="lampiran-title">Lampiran 1D</div>
+      <h3 style="font-size: 13px; text-align: center; margin-bottom: 10px;">FORMAT PENGHITUNGAN ANGKA KREDIT PK GURU KELAS/MATA PELAJARAN</h3>
+      
+      <table>
+        <tr>
+          <td style="width: 30%;">Nama Guru</td>
+          <td style="width: 3%;">:</td>
+          <td><span class="out_nama">-</span></td>
+        </tr>
+        <tr>
+          <td>NIP / Nomor Seri Karpeg</td>
+          <td>:</td>
+          <td><span class="out_nip">-</span></td>
+        </tr>
+        <tr>
+          <td>Pangkat / Golongan Ruang</td>
+          <td>:</td>
+          <td><span class="out_pangkat">-</span></td>
+        </tr>
+        <tr>
+          <td>Terhitung Mulai Tanggal (TMT)</td>
+          <td>:</td>
+          <td><span class="out_tmt">-</span></td>
+        </tr>
+        <tr>
+          <td>Masa Kerja Guru</td>
+          <td>:</td>
+          <td><span class="out_masakerja">-</span></td>
+        </tr>
+        <tr>
+          <td>Jabatan</td>
+          <td>:</td>
+          <td><span class="out_jabatan">-</span></td>
+        </tr>
+        <tr>
+          <td>Unit Kerja</td>
+          <td>:</td>
+          <td><span class="out_madrasah">-</span></td>
+        </tr>
+      </table>
+
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2">PENGHITUNGAN ANGKA KREDIT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="width: 70%;">Hasil Penilaian Kinerja Guru (Nilai PKG Maksimal = 56)</td>
+            <td class="bold text-center" style="width: 30%;" id="ak_pkg_val">0</td>
+          </tr>
+          <tr>
+            <td>
+              Persentase Nilai PKG = (Nilai PKG / 56) × 100%
+            </td>
+            <td class="bold text-center" id="ak_pkg_persen">0%</td>
+          </tr>
+          <tr>
+            <td>
+              Konversi Nilai PKG ke dalam Sebutan Skala (NPK)<br>
+              <small>(Amat Baik: 125%, Baik: 100%, Cukup: 75%, Sedang: 50%, Kurang: 25%)</small>
+            </td>
+            <td class="bold text-center" id="ak_npk">0% (<span id="ak_sebutan">-</span>)</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding: 10px;">
+              <div style="font-weight: bold; margin-bottom: 6px;">
+                Rumus Perhitungan Angka Kredit Satu Tahun:
+              </div>
+              <div style="margin-bottom: 8px; font-style: italic;">
+                Angka Kredit = [(AKK - AKST - AKPKB) × NPK] / 4
+              </div>
+              <div class="red-block">
+                <!-- DIBIARKAN KOSONG DENGAN BLOK MERAH SESUAI PERMINTAAN -->
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      ${getTandaTanganHTML()}
+    </div>
+  `;
+
+  container.innerHTML = html;
+  recalc();
+}
+
+function getTandaTanganHTML() {
+  return `
+    <div class="signature-container">
+      <div class="sig-date"><span class="out_titimangsa">Cirebon, 31 Desember 2026</span></div>
+      <table class="sig-table">
+        <tr>
+          <td>
+            Guru Yang Dinilai,<br>
+            <div class="sig-space"></div>
+            <strong class="out_nama">-</strong><br>
+            NIP. <span class="out_nip">-</span>
+          </td>
+          <td>
+            Penilai,<br>
+            <div class="sig-space"></div>
+            <strong class="out_penilai">-</strong><br>
+            NIP. <span class="out_nipPenilai">-</span>
+          </td>
+          <td>
+            Kepala Madrasah,<br>
+            <div class="sig-space"></div>
+            <strong class="out_kamad">-</strong><br>
+            NIP. <span class="out_nipKamad">-</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+
+function recalc() {
+  let totalSemuaNilai = 0;
+
+  dataKompetensi.forEach(k => {
+    let totalSkor = 0;
+    for (let i = 0; i < k.indicators.length; i++) {
+      const radio = document.querySelector(`input[name="k${k.id}_ind${i}"]:checked`);
+      if (radio) totalSkor += parseInt(radio.value);
+    }
+    const maxSkor = k.indicators.length * 2;
+    const persentase = (totalSkor / maxSkor) * 100;
+
+    let nilai = 1;
+    if (persentase > 75) nilai = 4;
+    else if (persentase > 50) nilai = 3;
+    else if (persentase > 25) nilai = 2;
+    else nilai = 1;
+
+    // Update elemen PKG
+    const elTot = document.getElementById(`totSkor_${k.id}`);
+    const elPer = document.getElementById(`persen_${k.id}`);
+    const elNilai = document.getElementById(`nilai_${k.id}`);
+    if (elTot) elTot.innerText = totalSkor;
+    if (elPer) elPer.innerText = Math.round(persentase) + '%';
+    if (elNilai) elNilai.innerText = nilai;
+
+    // Update rekap Lampiran 1C
+    const elRekap = document.getElementById(`rekap_${k.id}`);
+    if (elRekap) elRekap.innerText = nilai;
+
+    totalSemuaNilai += nilai;
+  });
+
+  const elTotNilai = document.getElementById('total_jumlah_nilai');
+  if (elTotNilai) elTotNilai.innerText = totalSemuaNilai;
+
+  // Recalculate Lampiran 1D (Angka Kredit)
+  const pkgPersen = (totalSemuaNilai / 56) * 100;
+  let npk = 100;
+  let sebutan = "Baik";
+
+  if (pkgPersen >= 91) { npk = 125; sebutan = "Amat Baik"; }
+  else if (pkgPersen >= 76) { npk = 100; sebutan = "Baik"; }
+  else if (pkgPersen >= 61) { npk = 75; sebutan = "Cukup"; }
+  else if (pkgPersen >= 51) { npk = 50; sebutan = "Sedang"; }
+  else { npk = 25; sebutan = "Kurang"; }
+
+  const elAkPkgVal = document.getElementById('ak_pkg_val');
+  const elAkPkgPersen = document.getElementById('ak_pkg_persen');
+  const elAkNpk = document.getElementById('ak_npk');
+  const elAkSebutan = document.getElementById('ak_sebutan');
+
+  if (elAkPkgVal) elAkPkgVal.innerText = totalSemuaNilai;
+  if (elAkPkgPersen) elAkPkgPersen.innerText = pkgPersen.toFixed(2) + '%';
+  if (elAkNpk) elAkNpk.innerText = npk + '%';
+  if (elAkSebutan) elAkSebutan.innerText = sebutan;
+}
+
+function syncInputs() {
+  const fields = ['nama', 'nip', 'ttl', 'pangkat', 'tmt', 'jabatan', 'nuptk', 'jk', 'pendidikan', 'masakerja', 'madrasah', 'kecamatan', 'penilai', 'nipPenilai', 'kamad', 'nipKamad', 'titimangsa'];
+  fields.forEach(f => {
+    const elInput = document.getElementById('in_' + f);
+    if (elInput) {
+      const val = elInput.value;
+      document.querySelectorAll('.out_' + f).forEach(el => el.innerText = val);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderAll();
+  const inputs = document.querySelectorAll('.form-section input, .form-section select');
+  inputs.forEach(input => {
+    input.addEventListener('input', syncInputs);
+    input.addEventListener('change', syncInputs);
+  });
+  syncInputs();
+});
+</script>
+
+</body>
+</html>
